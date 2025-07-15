@@ -1,4 +1,5 @@
 # smartBooks
+![CI](https://github.com/trevmanthony/smartBooks/actions/workflows/ci.yml/badge.svg)
 
 
 ## Setup
