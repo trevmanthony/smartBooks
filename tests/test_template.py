@@ -6,9 +6,7 @@ from bs4 import BeautifulSoup
 
 def test_index_html_structure():
     """index.html should end with closing tags and contain the success message."""
-    html_path = (
-        Path(__file__).resolve().parents[1] / "templates" / "index.html"
-    )
+    html_path = Path(__file__).resolve().parents[1] / "templates" / "index.html"
     html_content = html_path.read_text()
     soup = BeautifulSoup(html_content, "html.parser")
 
