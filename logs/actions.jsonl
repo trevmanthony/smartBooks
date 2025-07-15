@@ -1,1 +1,2 @@
 {"timestamp": "2025-07-15T20:07:18Z", "action": "Add FastAPI app, templates, tests, docs", "ticket_id": "task-fastapi-jinja2"}
+{"timestamp": "2025-07-15T20:22:20Z", "action": "Pin httpx<0.27 and update docs", "ticket_id": "task-httpx-pin"}
