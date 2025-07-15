@@ -1,22 +1,28 @@
 """Tests for app module."""
 
+# pylint: disable=wrong-import-position
+
 from pathlib import Path
 import sqlite3
 import sys
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-from fastapi.testclient import TestClient  # pylint: disable=wrong-import-position
-from app import app  # pylint: disable=wrong-import-position
+from fastapi.testclient import TestClient
+from bs4 import BeautifulSoup
+from app import app
 
 client = TestClient(app)
 
 
 def test_get_root():
-    """Home page should render successfully."""
+    """Home page should render successfully and contain the heading."""
     response = client.get("/")
     assert response.status_code == 200
-    assert "smartBooks" in response.text
+    soup = BeautifulSoup(response.text, "html.parser")
+    h1 = soup.find("h1", class_="display-4")
+    assert h1 is not None
+    assert h1.text.strip() == "smartBooks"
 
 
 def test_upload_valid_file(tmp_path):
