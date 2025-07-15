@@ -13,4 +13,8 @@
 {"timestamp": "2025-07-15T21:21:11Z", "action": "Add render helper with default context, new tests, ADR", "ticket_id": "task-default-context"}
 {"timestamp": "2025-07-15T21:39:19Z", "action": "Add codebase review ADR", "ticket_id": "task-codebase-review"}
 {"timestamp": "2025-07-15T21:44:10Z", "action": "Document Docker pylint error", "ticket_id": "task-docker-pylint-error"}
+
+{"timestamp": "2025-07-15T22:00:51Z", "action": "Ignore data directory for SQLite database, update code and tests", "ticket_id": "task-ignore-database-directory"}
+
 {"timestamp": "2025-07-15T21:57:48Z", "action": "Expose purgeDatabase on window and add tests", "ticket_id": "task-inline-handler"}
+

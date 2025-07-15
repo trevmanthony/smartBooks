@@ -10,7 +10,7 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from fastapi.testclient import TestClient
 from bs4 import BeautifulSoup
-from app import app
+from app import app, DB_PATH
 
 client = TestClient(app)
 
@@ -44,9 +44,6 @@ def test_upload_invalid_file(tmp_path):
         files = {"files": ("test.txt", f, "text/plain")}
         response = client.post("/upload", files=files)
     assert response.status_code == 400
-
-
-DB_PATH = Path(__file__).resolve().parents[1] / "database.db"
 
 
 def count_files():
