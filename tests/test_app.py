@@ -34,6 +34,12 @@ def test_upload_valid_file(tmp_path):
         response = client.post("/upload", files=files)
     assert response.status_code == 200
     assert response.json() == {"filenames": ["test.pdf"]}
+    with sqlite3.connect(DB_PATH) as conn:
+        cur = conn.execute(
+            "SELECT filename, content FROM files WHERE filename=?", ("test.pdf",)
+        )
+        row = cur.fetchone()
+    assert row == ("test.pdf", b"%PDF-1.4")
 
 
 def test_upload_invalid_file(tmp_path):
@@ -63,8 +69,19 @@ def test_purge_endpoint(tmp_path):
         )
     assert response.status_code == 200
     assert count_files() > 0
+    with sqlite3.connect(DB_PATH) as conn:
+        cur = conn.execute(
+            "SELECT filename, content FROM files WHERE filename=?", ("purge.pdf",)
+        )
+        row = cur.fetchone()
+    assert row == ("purge.pdf", b"%PDF-1.4")
 
     response = client.post("/purge")
     assert response.status_code == 200
     assert response.json() == {"status": "purged"}
     assert count_files() == 0
+    with sqlite3.connect(DB_PATH) as conn:
+        cur = conn.execute(
+            "SELECT filename FROM files WHERE filename=?", ("purge.pdf",)
+        )
+        assert cur.fetchone() is None

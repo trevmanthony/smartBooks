@@ -14,6 +14,8 @@
    uvicorn app:app --reload
    ```
 
+Uploaded files are stored directly in the local SQLite database as BLOBs.
+
 ## Tests
 Run the test suite with:
 ```bash
