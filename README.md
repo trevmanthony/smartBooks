@@ -1,5 +1,7 @@
 # smartBooks
 
+![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)
+
 ## Setup
 1. Install dependencies:
    ```bash
@@ -20,3 +22,6 @@ pytest
 
 ## Notes
 This project pins `httpx` below version 0.27 due to known compatibility issues.
+
+
+All pull requests must pass the CI workflow.
