@@ -13,7 +13,8 @@ app = FastAPI()
 TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "templates")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "data", "database.db")
+DEFAULT_DB_PATH = os.path.join(os.path.dirname(__file__), "data", "database.db")
+DB_PATH = os.getenv("DB_PATH", DEFAULT_DB_PATH)
 
 
 def init_db() -> None:
