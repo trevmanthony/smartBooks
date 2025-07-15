@@ -82,7 +82,6 @@ def test_purge_endpoint(tmp_path):
     assert count_files() == 0
 
 
-
 def test_env_db_path(tmp_path, monkeypatch):
     """Setting DB_PATH should create database at the custom location."""
     custom_path = tmp_path / "custom.db"
@@ -105,4 +104,3 @@ def test_env_db_path(tmp_path, monkeypatch):
             "SELECT filename FROM files WHERE filename=?", ("purge.pdf",)
         )
         assert cur.fetchone() is None
-
