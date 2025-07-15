@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>smartBooks</title>
+  <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    .card{border:0;box-shadow:0 .125rem .25rem rgba(0,0,0,.075);transition:.3s}
+    .card:hover{box-shadow:0 .5rem 1rem rgba(0,0,0,.15)}
+    .btn:hover{transform:translateY(-1px)}
+    .table{border-radius:.375rem;overflow:hidden}
+    .table th{background-color:var(--bs-secondary-bg);border-bottom:2px solid var(--bs-border-color);font-weight:600}
+    .table td{vertical-align:middle;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .alert{border:0;border-radius:.5rem}
+    @media(max-width:768px){
+      .container{padding:1rem}
+      .display-4{font-size:2rem}
+      .card-body{padding:1rem}
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+
+        {% if view_type=='index' %}
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h1 class="display-4 text-primary mb-0">smartBooks</h1>
+          <div>
+            <!-- Purge DB -->
+            <button class="btn btn-danger me-2" onclick="purgeDatabase()">
+              <i class="fas fa-trash"></i>
+            </button>
+            <!-- Upload Modal Trigger -->
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
+              <i class="fas fa-upload"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Transaction type toggle -->
+        <div class="text-center mb-4">
+          <div class="btn-group">
+            <a href="{{url_for('index', type='outflow')}}" class="btn {{ 'btn-danger' if transaction_type=='outflow' else 'btn-outline-danger' }}">
+              <i class="fas fa-arrow-up"></i>
+            </a>
+            {% if has_unclassified %}
+            <a href="{{url_for('index', type='unclassified')}}" class="btn {{ 'btn-secondary' if transaction_type=='unclassified' else 'btn-outline-secondary' }}">
+              <i class="fas fa-question"></i>
+            </a>
+            {% endif %}
+            <a href="{{url_for('index', type='inflow')}}" class="btn {{ 'btn-success' if transaction_type=='inflow' else 'btn-outline-success' }}">
+              <i class="fas fa-arrow-down"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Balance -->
+        <div class="text-center mb-4">
+          <h4 class="display-6 mb-0 {{'text-success' if transaction_type=='inflow' else 'text-danger'}}">
+            ${{ "{:,.2f}".format(total_amount) }}
+          </h4>
+        </div>
+
+        <!-- Leaderboard -->
+        <div class="card">
+          <div class="card-body">
+            {% if leaderboard %}
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <tbody>
+                  {% for row in leaderboard %}
+                  <tr>
+                    <td>
+                      {% if transaction_type=='inflow' %}
+                      <a href="{{ url_for('entity_transactions', entity_type='issuer', entity_name=row.entity, type=transaction_type) }}" class="text-decoration-none">
+                        {{ row.entity }}
+                      </a>
+                      {% else %}
+                      <a href="{{ url_for('entity_transactions', entity_type='payee', entity_name=row.entity, type=transaction_type) }}" class="text-decoration-none">
+                        {{ row.entity }}
+                      </a>
+                      {% endif %}
+                    </td>
+                    <td class="text-end {{'text-success' if transaction_type=='inflow' else 'text-danger'}}">
+                      ${{ "{:,.2f}".format(row.total_amount) }}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% else %}
+            <div class="text-center py-4">
+              <i class="fas fa-chart-line fa-3x mb-3 text-muted"></i>
+              <p class="text-muted">No {{ 'income' if transaction_type=='inflow' else 'spending' }} data available. Upload your files to get started!</p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        {% elif view_type=='transactions' %}
+        <!-- Entity-specific Transactions View -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <a href="{{ url_for('index') }}" class="btn btn-primary"><i class="fas fa-arrow-left"></i></a>
+          <h4 class="mb-0 flex-grow-1 text-center">{{ entity_name }} - {{ transaction_type.title() }} Transactions</h4>
+          <div style="width:65px"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            {% if transactions %}
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Check</th>
+                    <th>Amount</th>
+                    <th>Direction</th>
+                    <th>Confidence</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for txn in transactions %}
+                  <tr>
+                    <td>{{ txn.date.strftime('%m/%d/%Y') if txn.date else 'N/A' }}</td>
+                    <td>{{ txn.check_number or 'N/A' }}</td>
+                    <td class="text-end">${{ "{:,.2f}".format(txn.amount) }}</td>
+                    <td>
+                      <span class="badge {{'bg-success' if txn.direction=='inflow' else 'bg-danger'}}">
+                        {{ txn.direction or 'unknown' }}
+                      </span>
+                    </td>
+                    <td class="text-end">
+                      <small class="text-muted">{{ "{:.2f}".format(txn.confidence) }}</small>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% else %}
+            <div class="text-center py-4">
+              <i class="fas fa-receipt fa-3x mb-3 text-muted"></i>
+              <p class="text-muted">No transactions found for this {{ entity_type }}.</p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload Modal (index view only) -->
+  {% if view_type=='index' %}
+  <div class="modal fade" id="uploadModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form id="upload-form" method="POST" enctype="multipart/form-data" action="/upload">
+            <div class="mb-3">
+              <input type="file" class="form-control" id="file" name="files" accept=".pdf,.csv" multiple required>
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-primary" id="upload-btn">Upload Files</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const [form, button, input] = ['upload-form', 'upload-btn', 'file'].map(id => document.getElementById(id));
+
+      const showAlert = (msg, type) => {
+        const container = document.querySelector('.container');
+        container.querySelectorAll('.alert').forEach(a => a.remove());
+        container.insertAdjacentHTML('afterbegin', `
+          <div class="alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show">
+            <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : type === 'info' ? 'info-circle' : 'check-circle'}"></i>
+            ${msg}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        `);
+      };
+
+      const reset = () => {
+        button.innerHTML = 'Upload Files';
+        button.disabled = false;
+      };
+
+      form?.addEventListener('submit', e => {
+        e.preventDefault();
+        if (!input.files.length) return showAlert('Please select files to upload.', 'error');
+        if ([...input.files].some(file => !file.name.match(/\.(pdf|csv)$/i)))
+          return showAlert('Invalid file type. Please select PDF or CSV files.', 'error');
+        if ([...input.files].some(file => file.size > 16 * 1024 * 1024))
+          return showAlert('File too large. Maximum size is 16 MB.', 'error');
+
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Uploading...';
+        button.disabled = true;
+
+        fetch('/upload', { method: 'POST', body: new FormData(form) })
+          .then(r => r.json())
+          .
