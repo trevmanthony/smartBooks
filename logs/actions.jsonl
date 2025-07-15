@@ -19,3 +19,4 @@
 {"timestamp": "2025-07-15T21:57:48Z", "action": "Expose purgeDatabase on window and add tests", "ticket_id": "task-inline-handler"}
 
 {"timestamp": "2025-07-15T22:12:37Z", "action": "Document Docker tests exclusion causing pylint failure", "ticket_id": "task-docker-tests"}
+{"timestamp": "2025-07-15T22:26:25Z", "action": "Parameterize DB path via env var, update docs and tests", "ticket_id": "task-parameterize-db"}

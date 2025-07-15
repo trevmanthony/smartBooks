@@ -14,6 +14,19 @@
    uvicorn app:app --reload
    ```
 
+## Configuration
+The application stores uploaded file records in a SQLite database. By default
+the file is created at `data/database.db`, but you can override this location
+by setting the `DB_PATH` environment variable:
+
+```bash
+DB_PATH=/tmp/custom.db uvicorn app:app --reload
+```
+
+See the [FastAPI settings guide](https://fastapi.tiangolo.com/advanced/settings/#environment-variables)
+for more on environment-based configuration. For SQLite file management tips,
+refer to the [SQLite documentation](https://sqlite.org/whentouse.html).
+
 ## Tests
 Run the test suite with:
 ```bash

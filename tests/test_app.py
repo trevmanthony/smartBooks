@@ -1,6 +1,6 @@
 """Tests for app module."""
 
-# pylint: disable=wrong-import-position
+# pylint: disable=wrong-import-position, import-outside-toplevel
 
 from pathlib import Path
 import sqlite3
@@ -68,3 +68,21 @@ def test_purge_endpoint(tmp_path):
     assert response.status_code == 200
     assert response.json() == {"status": "purged"}
     assert count_files() == 0
+
+
+def test_env_db_path(tmp_path, monkeypatch):
+    """Setting DB_PATH should create database at the custom location."""
+    custom_path = tmp_path / "custom.db"
+    monkeypatch.setenv("DB_PATH", str(custom_path))
+    import importlib
+    import app as app_module
+
+    importlib.reload(app_module)
+    client_env = TestClient(app_module.app)
+
+    response = client_env.get("/")
+    assert response.status_code == 200
+    assert custom_path.exists()
+
+    monkeypatch.delenv("DB_PATH", raising=False)
+    importlib.reload(app_module)
