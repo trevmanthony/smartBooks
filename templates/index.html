@@ -45,15 +45,15 @@
         <!-- Transaction type toggle -->
         <div class="text-center mb-4">
           <div class="btn-group">
-            <a href="{{url_for('index', type='outflow')}}" class="btn {{ 'btn-danger' if transaction_type=='outflow' else 'btn-outline-danger' }}">
+            <a href="{{ url_for('index') }}?type=outflow" class="btn {{ 'btn-danger' if transaction_type=='outflow' else 'btn-outline-danger' }}">
               <i class="fas fa-arrow-up"></i>
             </a>
             {% if has_unclassified %}
-            <a href="{{url_for('index', type='unclassified')}}" class="btn {{ 'btn-secondary' if transaction_type=='unclassified' else 'btn-outline-secondary' }}">
+            <a href="{{ url_for('index') }}?type=unclassified" class="btn {{ 'btn-secondary' if transaction_type=='unclassified' else 'btn-outline-secondary' }}">
               <i class="fas fa-question"></i>
             </a>
             {% endif %}
-            <a href="{{url_for('index', type='inflow')}}" class="btn {{ 'btn-success' if transaction_type=='inflow' else 'btn-outline-success' }}">
+            <a href="{{ url_for('index') }}?type=inflow" class="btn {{ 'btn-success' if transaction_type=='inflow' else 'btn-outline-success' }}">
               <i class="fas fa-arrow-down"></i>
             </a>
           </div>
