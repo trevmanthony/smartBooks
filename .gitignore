@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+venv/
+# Additional patterns
+*.egg-info/
+*.egg
+*.log
+dist/
+build/
+*.sqlite3
+.env
+env/
+__pypackages__/
