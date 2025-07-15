@@ -194,7 +194,7 @@
         `);
       };
 
-      const purgeDatabase = () => {
+      window.purgeDatabase = function () {
         if (!confirm('Purge all data?')) return;
         fetch('/purge', { method: 'POST' })
           .then(r => {
