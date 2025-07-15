@@ -17,3 +17,6 @@ Run the test suite with:
 ```bash
 pytest
 ```
+
+## Notes
+This project pins `httpx` below version 0.27 due to known compatibility issues.
