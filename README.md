@@ -1,6 +1,5 @@
 # smartBooks
 
-![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)
 
 ## Setup
 1. Install dependencies:
