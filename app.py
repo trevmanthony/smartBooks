@@ -18,12 +18,19 @@ DB_PATH = os.getenv("DB_PATH", DEFAULT_DB_PATH)
 
 
 def init_db() -> None:
-    """Create the files table if it doesn't exist."""
+    """Create the files table if it doesn't exist and ensure `content` column."""
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     with sqlite3.connect(DB_PATH) as conn:
         conn.execute(
-            "CREATE TABLE IF NOT EXISTS files (id INTEGER PRIMARY KEY AUTOINCREMENT, filename TEXT)"
+            (
+                "CREATE TABLE IF NOT EXISTS files ("
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                "filename TEXT, content BLOB)"
+            )
         )
+        cols = [row[1] for row in conn.execute("PRAGMA table_info(files)")]
+        if "content" not in cols:
+            conn.execute("ALTER TABLE files ADD COLUMN content BLOB")
 
 
 init_db()
@@ -56,17 +63,20 @@ async def read_root(request: Request):
 
 @app.post("/upload")
 async def upload_files(files: List[UploadFile] = File(...)):
-    """Accept PDF and CSV files and store their names."""
+    """Accept PDF and CSV files and store their contents."""
+    records = []
     for file in files:
         if not (
             file.filename.lower().endswith(".pdf")
             or file.filename.lower().endswith(".csv")
         ):
             raise HTTPException(status_code=400, detail="Invalid file type")
+        content = await file.read()
+        records.append((file.filename, sqlite3.Binary(content)))
     with sqlite3.connect(DB_PATH) as conn:
         conn.executemany(
-            "INSERT INTO files(filename) VALUES (?)",
-            [(file.filename,) for file in files],
+            "INSERT INTO files(filename, content) VALUES (?, ?)",
+            records,
         )
     return {"filenames": [file.filename for file in files]}
 
