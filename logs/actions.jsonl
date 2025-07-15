@@ -4,3 +4,4 @@
 {"timestamp": "2025-07-15T20:55:13Z", "action": "Add Docker-based CI workflow with README badge", "ticket_id": "task-ci-docker"}
 {"timestamp": "2025-07-15T20:50:10Z", "action": "Add BeautifulSoup-based template regression test and restore HTML", "ticket_id": "task-template-regression"}
 
+{"timestamp": "2025-07-15T21:06:40Z", "action": "Add MIT License file and update README", "ticket_id": "task-license-file"}

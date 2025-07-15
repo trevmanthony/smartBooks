@@ -24,3 +24,6 @@ This project pins `httpx` below version 0.27 due to known compatibility issues.
 
 
 All pull requests must pass the CI workflow.
+
+## License
+This project is licensed under the [MIT License](./LICENSE).
