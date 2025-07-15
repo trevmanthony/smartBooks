@@ -194,6 +194,16 @@
         `);
       };
 
+      const purgeDatabase = () => {
+        if (!confirm('Purge all data?')) return;
+        fetch('/purge', { method: 'POST' })
+          .then(r => {
+            if (!r.ok) throw new Error('Purge failed');
+          })
+          .then(() => showAlert('Database purged.', 'info'))
+          .catch(() => showAlert('Purge failed. Please try again.', 'error'));
+      };
+
       const reset = () => {
         button.innerHTML = 'Upload Files';
         button.disabled = false;
