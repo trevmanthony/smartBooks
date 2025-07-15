@@ -6,3 +6,4 @@
 {"timestamp": "2025-07-15T21:06:18Z", "action": "Add module docstring to tests and ADR", "ticket_id": "task-docstring"}
 {"timestamp": "2025-07-15T21:07:16Z", "action": "Fix README CI badge link", "ticket_id": "task-update-badge"}
 
+{"timestamp": "2025-07-15T21:06:40Z", "action": "Add MIT License file and update README", "ticket_id": "task-license-file"}
