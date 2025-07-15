@@ -2,3 +2,5 @@
 {"timestamp": "2025-07-15T20:22:20Z", "action": "Pin httpx<0.27 and update docs", "ticket_id": "task-httpx-pin"}
 {"timestamp": "2025-07-15T20:34:42Z", "action": "Add Python .gitignore and ADR", "ticket_id": "task-gitignore"}
 {"timestamp": "2025-07-15T20:55:13Z", "action": "Add Docker-based CI workflow with README badge", "ticket_id": "task-ci-docker"}
+{"timestamp": "2025-07-15T20:50:10Z", "action": "Add BeautifulSoup-based template regression test and restore HTML", "ticket_id": "task-template-regression"}
+

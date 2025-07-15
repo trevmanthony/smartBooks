@@ -211,5 +211,18 @@
         button.disabled = true;
 
         fetch('/upload', { method: 'POST', body: new FormData(form) })
-          .then(r => r.json())
-          .
+          .then(r => {
+            if (!r.ok) throw new Error('Upload failed');
+            return r.json();
+          })
+          .then(() => showAlert('Files uploaded successfully!', 'success'))
+          .catch(() => showAlert('Upload failed. Please try again.', 'error'))
+          .finally(() => {
+            reset();
+            form.reset();
+          });
+      });
+    });
+  </script>
+</body>
+</html>
