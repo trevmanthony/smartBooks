@@ -19,3 +19,4 @@
 {"timestamp": "2025-07-15T21:57:48Z", "action": "Expose purgeDatabase on window and add tests", "ticket_id": "task-inline-handler"}
 
 {"timestamp": "2025-07-15T22:12:37Z", "action": "Document Docker tests exclusion causing pylint failure", "ticket_id": "task-docker-tests"}
+{"timestamp": "2025-07-15T22:39:11Z", "action": "Add Selenium browser tests and dependencies", "ticket_id": "task-frontend-selenium"}
