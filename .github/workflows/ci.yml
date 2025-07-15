@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: docker build -t smartbooks:${{ github.sha }} .
+
+      - name: Run black
+        run: docker run --rm smartbooks:${{ github.sha }} black --check .
+
+      - name: Run pylint
+        run: docker run --rm smartbooks:${{ github.sha }} pylint app.py tests
+
+      - name: Run pytest
+        run: docker run --rm smartbooks:${{ github.sha }} pytest
