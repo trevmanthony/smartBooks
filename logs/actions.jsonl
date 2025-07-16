@@ -25,3 +25,10 @@
 {"timestamp": "2025-07-15T22:30:41Z", "action": "Store uploads as BLOBs, update code, tests, docs, ADR", "ticket_id": "task-store-uploads-blob"}
 
 {"timestamp": "2025-07-15T22:47:23Z", "action": "Include tests in Docker image and update CI docs", "ticket_id": "task-docker-tests-fix"}
+{"timestamp": "2025-07-15T23:58:29Z", "action": "Add dependency injection for DB path, update tests and ADR", "ticket_id": "task-dependency-injection"}
+{"timestamp": "2025-07-16T00:11:40.563881Z", "action": "Fix DB path injection conflicts, restore async DB operations", "ticket_id": "task-dependency-injection-fix"}
+{"timestamp": "2025-07-16T00:15:44Z", "action": "Switch run_in_threadpool import to fastapi module and update ADR", "ticket_id": "task-dependency-injection-fix2"}
+{"timestamp": "2025-07-16T00:20:28Z", "action": "Finalize DB path injection and update tests", "ticket_id": "task-dependency-injection-final"}
+{"timestamp": "2025-07-16T03:09:40Z", "action": "Restore missing tests for DB path injection and MIME/size checks", "ticket_id": "task-dependency-injection-cleanup"}
+{"timestamp": "2025-07-16T03:16:02.184393Z", "action": "Resolve merge conflicts and ensure tests pass", "ticket_id": "task-dependency-injection-cleanup2"}
+{"timestamp": "2025-07-16T03:22:59Z", "action": "Verified dependency injection and resolved remaining merge conflicts", "ticket_id": "task-dependency-injection"}
