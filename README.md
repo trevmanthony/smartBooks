@@ -46,6 +46,17 @@ document through an OCR and LLM pipeline. The prototype uses stub clients to
 demonstrate asynchronous processing with FastAPI `BackgroundTasks`.
 
 
+To run the full pipeline with Document AI and o4-mini, set the following environment variables:
+
+```bash
+DOC_AI_PROJECT_ID=<your-project>
+DOC_AI_LOCATION=<region>  # optional
+DOC_AI_PROCESSOR_ID=<processor-id>
+O4MINI_MODEL_PATH=/path/to/o4-mini.gguf
+```
+
+Then call `pipeline.create_langchain_pipeline()` in place of the stubs.
+
 ## Tests
 Run the test suite with:
 ```bash
