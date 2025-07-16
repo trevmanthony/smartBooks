@@ -53,6 +53,26 @@ def test_upload_invalid_file(tmp_path):
     assert response.status_code == 400
 
 
+def test_upload_invalid_mime_type(tmp_path):
+    """Uploading with valid extension but wrong MIME type should fail."""
+    pdf_file = tmp_path / "fake.pdf"
+    pdf_file.write_bytes(b"%PDF-1.4")
+    with pdf_file.open("rb") as f:
+        files = {"files": ("fake.pdf", f, "text/plain")}
+        response = client.post("/upload", files=files)
+    assert response.status_code == 400
+
+
+def test_upload_too_large(tmp_path):
+    """Files larger than the 16 MB limit should be rejected."""
+    big_file = tmp_path / "big.pdf"
+    big_file.write_bytes(b"0" * (16 * 1024 * 1024 + 1))
+    with big_file.open("rb") as f:
+        files = {"files": ("big.pdf", f, "application/pdf")}
+        response = client.post("/upload", files=files)
+    assert response.status_code == 400
+
+
 def count_files():
     """Return number of stored file records."""
     with sqlite3.connect(DB_PATH) as conn:
