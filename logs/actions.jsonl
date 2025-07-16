@@ -37,3 +37,4 @@
 {"timestamp": "2025-07-16T15:52:56Z", "action": "Add tasks from decisions review", "ticket_id": "task-decisions-review"}
 {"timestamp": "2025-07-16T16:07:51Z", "action": "Introduce Pydantic Settings", "ticket_id": "task-pydantic-settings"}
 {"timestamp": "2025-07-16T16:35:31Z", "action": "Add consolidation ADR and index", "ticket_id": "task-consolidate-index"}
+{"timestamp": "2025-07-16T16:49:01Z", "action": "Update AGENTS rules and add ADR", "ticket_id": "task-update-agents"}

@@ -5,7 +5,7 @@ Rule 1 – One goal per task
 Limit each task to a single measurable goal and provide a clear pass/fail check that must succeed.
 
 Rule 2 – No scope creep
-If new requirements appear during a task, finish the current goal first, add the new item as an unchecked `- [ ]` entry in the root `TODO.md`, and wait for a separate task before working on it.
+If new requirements appear during a task, finish the current goal first. Immediately record the item as an unchecked `- [ ]` entry in the root `TODO.md` so it is not forgotten, and wait for a separate task before working on it.
 
 Rule 3 – Plan before coding
 For every task, first propose 2–3 researched implementation options with brief pros/cons and wait for human approval before making code changes.
@@ -32,5 +32,3 @@ Each task is complete only when the project’s defined CI pipeline (e.g., GitHu
 Rule 10 – Update documentation
 If a change affects external behavior—API endpoints, CLI flags, environment variables, or user-visible workflows—update the relevant README or /docs/*.md files before completing the task.
 
-Rule 11 – Commit and PR conventions
-Write commit messages in imperative mood with a short (about 50 characters) summary referencing a single ticket ID. Develop each task on its own branch and open a pull request once CI passes.

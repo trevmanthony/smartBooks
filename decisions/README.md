@@ -3,6 +3,7 @@
 This directory stores ADRs for the project. The index below lists each file in chronological order. Entries marked as *superseded* are kept for history but replaced by a newer ADR.
 
 - [agents_guidelines_update_adr.md](agents_guidelines_update_adr.md)
+- [agents_guidelines_update2_adr.md](agents_guidelines_update2_adr.md)
 - [audit_log_adr.md](audit_log_adr.md)
 - [audit_log_maintenance_adr.md](audit_log_maintenance_adr.md)
 - [codebase_review_adr.md](codebase_review_adr.md)
