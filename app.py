@@ -7,6 +7,10 @@ from typing import List
 from fastapi import FastAPI, UploadFile, File, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+# Import celery_app so a worker can load the tasks module
+from tasks import store_file, celery_app
+
+__all__ = ["celery_app"]
 
 app = FastAPI()
 
@@ -63,8 +67,7 @@ async def read_root(request: Request):
 
 @app.post("/upload")
 async def upload_files(files: List[UploadFile] = File(...)):
-    """Accept PDF and CSV files and store their contents."""
-    records = []
+    """Accept PDF/CSV files and delegate storage to a Celery task."""
     for file in files:
         if not (
             file.filename.lower().endswith(".pdf")
@@ -72,12 +75,7 @@ async def upload_files(files: List[UploadFile] = File(...)):
         ):
             raise HTTPException(status_code=400, detail="Invalid file type")
         content = await file.read()
-        records.append((file.filename, sqlite3.Binary(content)))
-    with sqlite3.connect(DB_PATH) as conn:
-        conn.executemany(
-            "INSERT INTO files(filename, content) VALUES (?, ?)",
-            records,
-        )
+        store_file.delay(file.filename, content)
     return {"filenames": [file.filename for file in files]}
 
 

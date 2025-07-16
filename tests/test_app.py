@@ -5,6 +5,9 @@
 from pathlib import Path
 import sqlite3
 import sys
+import os
+
+os.environ.setdefault("CELERY_TASK_ALWAYS_EAGER", "true")
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
