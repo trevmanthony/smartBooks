@@ -11,7 +11,8 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 from fastapi.concurrency import run_in_threadpool
 from fastapi.testclient import TestClient
 from bs4 import BeautifulSoup
-from app import app, DB_PATH
+from app import app
+from config import settings
 
 client = TestClient(app)
 
@@ -35,7 +36,7 @@ def test_upload_valid_file(tmp_path):
         response = client.post("/upload", files=files)
     assert response.status_code == 200
     assert response.json() == {"filenames": ["test.pdf"]}
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(settings.db_path) as conn:
         cur = conn.execute(
             "SELECT filename, content FROM files WHERE filename=?", ("test.pdf",)
         )
@@ -75,7 +76,7 @@ def test_upload_too_large(tmp_path):
 
 def count_files():
     """Return number of stored file records."""
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(settings.db_path) as conn:
         cur = conn.execute("SELECT COUNT(*) FROM files")
         return cur.fetchone()[0]
 
@@ -90,7 +91,7 @@ def test_purge_endpoint(tmp_path):
         )
     assert response.status_code == 200
     assert count_files() > 0
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(settings.db_path) as conn:
         cur = conn.execute(
             "SELECT filename, content FROM files WHERE filename=?", ("purge.pdf",)
         )
@@ -109,7 +110,9 @@ def test_env_db_path(tmp_path, monkeypatch):
     monkeypatch.setenv("DB_PATH", str(custom_path))
     import importlib
     import app as app_module
+    import config as config_module
 
+    importlib.reload(config_module)
     importlib.reload(app_module)
     client_env = TestClient(app_module.app)
 
@@ -120,7 +123,7 @@ def test_env_db_path(tmp_path, monkeypatch):
     monkeypatch.delenv("DB_PATH", raising=False)
     importlib.reload(app_module)
 
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(config_module.settings.db_path) as conn:
         cur = conn.execute(
             "SELECT filename FROM files WHERE filename=?", ("purge.pdf",)
         )

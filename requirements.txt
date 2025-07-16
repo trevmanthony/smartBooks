@@ -81,9 +81,13 @@ platformdirs==4.3.8
 pluggy==1.6.0
     # via pytest
 pydantic==2.11.7
-    # via fastapi
+    # via
+    #   fastapi
+    #   pydantic-settings
 pydantic-core==2.33.2
     # via pydantic
+pydantic-settings==2.10.1
+    # via -r requirements.in
 pygments==2.19.2
     # via pytest
 pylint==3.3.7
@@ -93,7 +97,9 @@ pysocks==1.7.1
 pytest==8.4.1
     # via -r requirements.in
 python-dotenv==1.1.1
-    # via webdriver-manager
+    # via
+    #   pydantic-settings
+    #   webdriver-manager
 python-multipart==0.0.20
     # via -r requirements.in
 requests==2.32.4
@@ -130,7 +136,9 @@ typing-extensions==4.14.1
     #   starlette
     #   typing-inspection
 typing-inspection==0.4.1
-    # via pydantic
+    # via
+    #   pydantic
+    #   pydantic-settings
 urllib3[socks]==2.5.0
     # via
     #   requests

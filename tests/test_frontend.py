@@ -16,7 +16,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
-from app import DB_PATH  # pylint: disable=wrong-import-position
+from config import settings  # pylint: disable=wrong-import-position
 
 PORT = 8001
 SERVER_CMD = ["uvicorn", "app:app", "--port", str(PORT)]
@@ -46,7 +46,7 @@ def driver(server):  # pylint: disable=unused-argument
 
 def count_files() -> int:
     """Return current count of uploaded files."""
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(settings.db_path) as conn:
         cur = conn.execute("SELECT COUNT(*) FROM files")
         return cur.fetchone()[0]
 
@@ -72,7 +72,7 @@ def test_upload_via_browser(driver, tmp_path):
 
 def test_purge_via_browser(driver):
     """Clicking Purge DB should remove records."""
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(settings.db_path) as conn:
         conn.execute("INSERT INTO files(filename) VALUES ('dummy.pdf')")
     assert count_files() > 0
     driver.get(f"http://localhost:{PORT}/")
