@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libnss3 libatk-bridge2.0-0 libgtk-3-0 libx11-xcb1 libxcomposite1 \
     libxdamage1 libxrandr2 libgbm1 libasound2 libxss1 libxtst6 libdrm2 \
     libxcb-dri3-0 libxshmfence1 fonts-liberation curl \
+    cmake g++ \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt ./
