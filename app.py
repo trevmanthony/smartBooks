@@ -7,6 +7,7 @@ from typing import List
 from fastapi import FastAPI, UploadFile, File, Request, HTTPException, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from starlette.concurrency import run_in_threadpool
 
 app = FastAPI()
 
@@ -80,17 +81,25 @@ async def upload_files(
             raise HTTPException(status_code=400, detail="Invalid file type")
         content = await file.read()
         records.append((file.filename, sqlite3.Binary(content)))
-    with sqlite3.connect(db_path) as conn:
-        conn.executemany(
-            "INSERT INTO files(filename, content) VALUES (?, ?)",
-            records,
-        )
+
+    def insert_records() -> None:
+        with sqlite3.connect(db_path) as conn:
+            conn.executemany(
+                "INSERT INTO files(filename, content) VALUES (?, ?)",
+                records,
+            )
+
+    await run_in_threadpool(insert_records)
     return {"filenames": [file.filename for file in files]}
 
 
 @app.post("/purge")
 async def purge_database(db_path: str = Depends(get_db_path)):
     """Remove all uploaded file records."""
-    with sqlite3.connect(db_path) as conn:
-        conn.execute("DELETE FROM files")
+
+    def purge() -> None:
+        with sqlite3.connect(db_path) as conn:
+            conn.execute("DELETE FROM files")
+
+    await run_in_threadpool(purge)
     return {"status": "purged"}
