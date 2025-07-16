@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Application settings module."""
+
+from __future__ import annotations
 
 from pathlib import Path
 from pydantic_settings import BaseSettings

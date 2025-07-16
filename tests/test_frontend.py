@@ -1,6 +1,6 @@
 """Browser-based tests for index.html JavaScript."""
 
-# pylint: disable=redefined-outer-name
+# pylint: disable=redefined-outer-name, import-error
 
 from __future__ import annotations
 import sqlite3
@@ -26,7 +26,7 @@ SERVER_CMD = ["uvicorn", "app:app", "--port", str(PORT)]
 def server():
     """Start the FastAPI server for browser tests."""
     with subprocess.Popen(SERVER_CMD) as proc:
-        time.sleep(1)
+        time.sleep(2)
         yield
         proc.terminate()
         proc.wait()
