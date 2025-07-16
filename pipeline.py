@@ -5,6 +5,8 @@ from __future__ import annotations
 # pylint: disable=too-few-public-methods,unused-argument, import-outside-toplevel, broad-exception-caught, useless-import-alias, invalid-name
 from typing import Protocol
 
+from config import PipelineConfig
+
 try:  # optional import for patching in tests
     from google.cloud import (
         documentai as DOCUMENTAI,
@@ -107,17 +109,14 @@ class O4MiniClient:
         return await loop.run_in_executor(None, self._llm.invoke, prompt)
 
 
-def create_langchain_pipeline() -> AsyncPipeline:
+def create_langchain_pipeline(config: PipelineConfig | None = None) -> AsyncPipeline:
     """Construct a pipeline using Document AI and o4-mini via LangChain."""
-    import os
+    cfg = config or PipelineConfig()
 
-    project = os.environ.get("DOC_AI_PROJECT_ID")
-    location = os.environ.get("DOC_AI_LOCATION", "us")
-    processor = os.environ.get("DOC_AI_PROCESSOR_ID")
-    model_path = os.environ.get("O4MINI_MODEL_PATH")
-    if not (project and processor and model_path):
-        raise RuntimeError("Document AI and o4-mini configuration missing")
-
-    ocr_client = DocumentAIClient(project, location, processor)
-    llm_client = O4MiniClient(model_path)
+    ocr_client = DocumentAIClient(
+        cfg.doc_ai_project_id,
+        cfg.doc_ai_location,
+        cfg.doc_ai_processor_id,
+    )
+    llm_client = O4MiniClient(cfg.o4mini_model_path)
     return AsyncPipeline(ocr_client, llm_client)

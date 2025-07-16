@@ -14,3 +14,12 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+class PipelineConfig(BaseSettings):
+    """Settings for the Document AI and o4-mini pipeline."""
+
+    doc_ai_project_id: str
+    doc_ai_location: str = "us"
+    doc_ai_processor_id: str
+    o4mini_model_path: str

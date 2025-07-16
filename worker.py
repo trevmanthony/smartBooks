@@ -9,6 +9,7 @@ from pipeline import (
     StubLLMClient,
     create_langchain_pipeline,
 )
+from config import PipelineConfig
 
 celery_app = Celery(
     "smartbooks",
@@ -16,7 +17,7 @@ celery_app = Celery(
 )
 
 if os.environ.get("USE_REAL_PIPELINE") == "1":
-    pipeline = create_langchain_pipeline()
+    pipeline = create_langchain_pipeline(PipelineConfig())
 else:
     pipeline = AsyncPipeline(StubOCRClient(), StubLLMClient())
 

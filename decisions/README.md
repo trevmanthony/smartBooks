@@ -49,3 +49,4 @@ This directory stores ADRs for the project. The index below lists each file in c
 - [financial_extraction_pipeline_adr.md](financial_extraction_pipeline_adr.md)
 - [celery_worker_microservice_adr.md](celery_worker_microservice_adr.md)
 - [celery_worker_implementation_adr.md](celery_worker_implementation_adr.md)
+- [pipeline_config_adr.md](pipeline_config_adr.md)
