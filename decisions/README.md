@@ -44,3 +44,4 @@ This directory stores ADRs for the project. The index below lists each file in c
 - [docker_adrs_review_adr.md](docker_adrs_review_adr.md)
 - [async_pipeline_adr.md](async_pipeline_adr.md)
 - [stubbed_pipeline_adr.md](stubbed_pipeline_adr.md)
+- [o4mini_langchain_usage_adr.md](o4mini_langchain_usage_adr.md)
