@@ -7,6 +7,12 @@ from typing import List
 from fastapi import FastAPI, UploadFile, File, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.concurrency import run_in_threadpool
+
+# Import celery_app so a worker can load the tasks module
+from tasks import store_file, celery_app
+
+__all__ = ["celery_app"]
 
 app = FastAPI()
 
@@ -15,6 +21,8 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 DEFAULT_DB_PATH = os.path.join(os.path.dirname(__file__), "data", "database.db")
 DB_PATH = os.getenv("DB_PATH", DEFAULT_DB_PATH)
+
+MAX_FILE_SIZE = 16 * 1024 * 1024  # 16 MB
 
 
 def init_db() -> None:
@@ -63,27 +71,30 @@ async def read_root(request: Request):
 
 @app.post("/upload")
 async def upload_files(files: List[UploadFile] = File(...)):
-    """Accept PDF and CSV files and store their contents."""
-    records = []
+    """Accept PDF and CSV files and delegate storage to a Celery task."""
+    allowed_types = {"application/pdf", "text/csv"}
     for file in files:
         if not (
             file.filename.lower().endswith(".pdf")
             or file.filename.lower().endswith(".csv")
         ):
             raise HTTPException(status_code=400, detail="Invalid file type")
+        if file.content_type not in allowed_types:
+            raise HTTPException(status_code=400, detail="Invalid MIME type")
         content = await file.read()
-        records.append((file.filename, sqlite3.Binary(content)))
-    with sqlite3.connect(DB_PATH) as conn:
-        conn.executemany(
-            "INSERT INTO files(filename, content) VALUES (?, ?)",
-            records,
-        )
+        if len(content) > MAX_FILE_SIZE:
+            raise HTTPException(status_code=400, detail="File too large")
+        store_file.delay(file.filename, content)
     return {"filenames": [file.filename for file in files]}
 
 
 @app.post("/purge")
 async def purge_database():
     """Remove all uploaded file records."""
-    with sqlite3.connect(DB_PATH) as conn:
-        conn.execute("DELETE FROM files")
+
+    def purge() -> None:
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.execute("DELETE FROM files")
+
+    await run_in_threadpool(purge)
     return {"status": "purged"}
