@@ -49,3 +49,4 @@
 {"timestamp": "2025-07-16T20:23:54Z", "action": "Add Celery worker microservice ADR", "ticket_id": "task-celery-microservice"}
 {"timestamp": "2025-07-16T20:48:38Z", "action": "Implement Celery worker microservice", "ticket_id": "task-celery-worker"}
 {"timestamp": "2025-07-16T21:31:48Z", "action": "Add OCR parsing prompt", "ticket_id": "task-option2"}
+{"timestamp": "2025-07-16T21:54:42Z", "action": "Introduce PipelineConfig class and ADR", "ticket_id": "task-pipeline-config"}

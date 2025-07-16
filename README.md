@@ -55,7 +55,9 @@ DOC_AI_PROCESSOR_ID=<processor-id>
 O4MINI_MODEL_PATH=/path/to/o4-mini.gguf
 ```
 
-Then call `pipeline.create_langchain_pipeline()` in place of the stubs.
+Then call `pipeline.create_langchain_pipeline(PipelineConfig())` in place of the stubs.
+`PipelineConfig` (from `config.py`) reads these variables from the environment using
+Pydantic's `BaseSettings`.
 
 ### Celery worker
 

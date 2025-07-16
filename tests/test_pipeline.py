@@ -64,10 +64,12 @@ def test_create_langchain_pipeline(monkeypatch):
     """create_langchain_pipeline should use env vars to configure clients."""
     import pipeline as pl
 
-    monkeypatch.setenv("DOC_AI_PROJECT_ID", "proj")
-    monkeypatch.setenv("DOC_AI_LOCATION", "us")
-    monkeypatch.setenv("DOC_AI_PROCESSOR_ID", "pid")
-    monkeypatch.setenv("O4MINI_MODEL_PATH", "/model.bin")
+    cfg = pl.PipelineConfig(
+        doc_ai_project_id="proj",
+        doc_ai_location="us",
+        doc_ai_processor_id="pid",
+        o4mini_model_path="/model.bin",
+    )
 
     class FakeDocClient:
         def processor_path(self, p, l, pr):
@@ -105,7 +107,7 @@ def test_create_langchain_pipeline(monkeypatch):
     )
     monkeypatch.setattr(pl, "LLAMACPP", FakeLlama)
 
-    pipeline = pl.create_langchain_pipeline()
+    pipeline = pl.create_langchain_pipeline(cfg)
     result = asyncio.run(pipeline.run(b"data"))
     expected_prompt = (
         "Extract the invoice number, date, and total from this text as JSON.\n"
