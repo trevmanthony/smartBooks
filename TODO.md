@@ -12,4 +12,4 @@
 - [x] Review Docker ADRs for outdated steps
 - [ ] Implement structured JSON logging as outlined in structured_logging_structlog_adr.md
 - [ ] Configure env variables for production pipeline per financial_extraction_pipeline_adr.md
-- [ ] Implement Celery worker microservice
+- [x] Implement Celery worker microservice

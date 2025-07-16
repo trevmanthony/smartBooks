@@ -41,9 +41,9 @@ Uploaded files are stored directly in the local SQLite database as BLOBs.
 Each individual upload is limited to 16&nbsp;MB and must use the correct PDF or
 CSV MIME type.
 
-The `/process/{id}` endpoint triggers a background task that runs the uploaded
-document through an OCR and LLM pipeline. The prototype uses stub clients to
-demonstrate asynchronous processing with FastAPI `BackgroundTasks`.
+The `/process/{id}` endpoint enqueues a Celery task that runs the uploaded
+document through an OCR and LLM pipeline. During local testing, stub clients
+demonstrate the workflow.
 
 
 To run the full pipeline with Document AI and o4-mini, set the following environment variables:
@@ -56,6 +56,14 @@ O4MINI_MODEL_PATH=/path/to/o4-mini.gguf
 ```
 
 Then call `pipeline.create_langchain_pipeline()` in place of the stubs.
+
+### Celery worker
+
+Start the worker with Redis as the broker:
+
+```bash
+CELERY_BROKER_URL=redis://localhost:6379/0 celery -A worker.celery_app worker --loglevel=info
+```
 
 ## Tests
 Run the test suite with:
