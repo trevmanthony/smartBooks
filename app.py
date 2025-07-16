@@ -7,6 +7,7 @@ from typing import List
 from fastapi import FastAPI, UploadFile, File, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+
 # Import celery_app so a worker can load the tasks module
 from tasks import store_file, celery_app
 
