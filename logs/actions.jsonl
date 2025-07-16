@@ -43,3 +43,4 @@
 {"timestamp": "2025-07-16T17:29:13Z", "action": "Mark outdated Docker ADR as superseded and add review ADR", "ticket_id": "task-docker-adrs"}
 {"timestamp": "2025-07-16T18:09:58Z", "action": "Add async pipeline with background tasks", "ticket_id": "task-langchain-async"}
 {"timestamp": "2025-07-16T18:33:27Z", "action": "Remove llama-cpp and add cmake and g++", "ticket_id": "task-build-fix"}
+{"timestamp": "2025-07-16T19:14:34Z", "action": "Add structured logging ADR and tests", "ticket_id": "task-structlog-adr"}
