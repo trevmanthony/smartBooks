@@ -32,3 +32,4 @@
 {"timestamp": "2025-07-16T12:48:45Z", "action": "Add external parsing ADR", "ticket_id": "task-external-parsing"}
 {"timestamp": "2025-07-16T13:00:10Z", "action": "Pin dependencies with pip-tools", "ticket_id": "task-pin-deps"}
 {"timestamp": "2025-07-16T13:39:21Z", "action": "Add ADR for LLM framework decision", "ticket_id": "task-llm-framework-adr"}
+{"timestamp": "2025-07-16T15:39:26Z", "action": "Add Google Doc AI OCR planning ADR", "ticket_id": "task-google-ocr-plan"}
