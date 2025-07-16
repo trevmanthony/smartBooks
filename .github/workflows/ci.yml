@@ -10,6 +10,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Install pip-tools
+        run: pip install --no-cache-dir pip-tools
+
+      - name: Compile requirements
+        run: pip-compile requirements.in --output-file requirements.txt
+
+      - name: Install dependencies
+        run: pip install --no-cache-dir -r requirements.txt
+
       - name: Build Docker image
         run: docker build -t smartbooks:${{ github.sha }} .
 
