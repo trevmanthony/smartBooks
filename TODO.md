@@ -11,6 +11,7 @@
 - [x] Evaluate Celery for distributed task processing
 - [x] Review Docker ADRs for outdated steps
 - [ ] Implement structured JSON logging as outlined in structured_logging_structlog_adr.md
-- [ ] Configure env variables for production pipeline per financial_extraction_pipeline_adr.md
+- [x] Configure env variables for production pipeline per financial_extraction_pipeline_adr.md
+- [ ] Implement UI endpoint to display extraction results per display_results_ui_adr.md
 - [ ] Update production configuration to use PipelineConfig per pipeline_config_adr.md
 - [x] Implement Celery worker microservice
