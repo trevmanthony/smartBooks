@@ -41,6 +41,10 @@ Uploaded files are stored directly in the local SQLite database as BLOBs.
 Each individual upload is limited to 16&nbsp;MB and must use the correct PDF or
 CSV MIME type.
 
+The `/process/{id}` endpoint triggers a background task that runs the uploaded
+document through an OCR and LLM pipeline. The prototype uses stub clients to
+demonstrate asynchronous processing with FastAPI `BackgroundTasks`.
+
 
 ## Tests
 Run the test suite with:
