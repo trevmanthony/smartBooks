@@ -13,19 +13,23 @@
 {"timestamp": "2025-07-15T21:21:11Z", "action": "Add render helper with default context, new tests, ADR", "ticket_id": "task-default-context"}
 {"timestamp": "2025-07-15T21:39:19Z", "action": "Add codebase review ADR", "ticket_id": "task-codebase-review"}
 {"timestamp": "2025-07-15T21:44:10Z", "action": "Document Docker pylint error", "ticket_id": "task-docker-pylint-error"}
-
 {"timestamp": "2025-07-15T22:00:51Z", "action": "Ignore data directory for SQLite database, update code and tests", "ticket_id": "task-ignore-database-directory"}
-
 {"timestamp": "2025-07-15T21:57:48Z", "action": "Expose purgeDatabase on window and add tests", "ticket_id": "task-inline-handler"}
-
 {"timestamp": "2025-07-15T22:12:37Z", "action": "Document Docker tests exclusion causing pylint failure", "ticket_id": "task-docker-tests"}
-
+{"timestamp": "2025-07-15T22:39:11Z", "action": "Add Selenium browser tests and dependencies", "ticket_id": "task-frontend-selenium"}
+{"timestamp": "2025-07-15T23:26:26Z", "action": "Wait for modal in Selenium tests", "ticket_id": "task-modal-wait"}
+{"timestamp": "2025-07-15T23:55:20Z", "action": "Include tests in Docker image to fix Pylint", "ticket_id": "task-pylint-docker"}
+{"timestamp": "2025-07-16T00:12:31Z", "action": "Fix variable name merge conflict in test", "ticket_id": "task-modal-error"}
+{"timestamp": "2025-07-16T00:13:00Z", "action": "Document merge variable fix ADR", "ticket_id": "task-modal-error"}
+{"timestamp": "2025-07-16T00:20:50Z", "action": "Wait for DB update using WebDriverWait", "ticket_id": "task-frontend-selenium"}
 {"timestamp": "2025-07-15T22:26:25Z", "action": "Parameterize DB path via env var, update docs and tests", "ticket_id": "task-parameterize-db"}
-
 {"timestamp": "2025-07-15T22:30:41Z", "action": "Store uploads as BLOBs, update code, tests, docs, ADR", "ticket_id": "task-store-uploads-blob"}
-
 {"timestamp": "2025-07-15T22:47:23Z", "action": "Include tests in Docker image and update CI docs", "ticket_id": "task-docker-tests-fix"}
 {"timestamp": "2025-07-15T23:57:33Z", "action": "Add Celery background processing with Redis, update docs and tests", "ticket_id": "task-celery-bg"}
+{"timestamp": "2025-07-15T23:57:56Z", "action": "Wrap SQLite operations in run_in_threadpool, add tests and ADR", "ticket_id": "task-threadpool"}
+{"timestamp": "2025-07-15T23:54:28Z", "action": "Enforce upload size and MIME checks, update docs and tests", "ticket_id": "task-upload-validation"}
 {"timestamp": "2025-07-16T00:13:08Z", "action": "Fix formatting issues in app.py and ensure lint/tests pass", "ticket_id": "task-celery-bg-format-fix"}
 {"timestamp": "2025-07-16T00:19:44Z", "action": "Restore validation logic with Celery, run in threadpool for purge", "ticket_id": "task-celery-bg-fixes"}
 {"timestamp": "2025-07-16T03:11:41Z", "action": "Add ADR for Celery eager mode and confirm tests pass", "ticket_id": "task-celery-tests-fix"}
+{"timestamp": "2025-07-16T03:18:32Z", "action": "Clarify AGENTS.md rules and add ADR", "ticket_id": "task-agents-improve"}
+{"timestamp": "2025-07-16T03:31:56Z", "action": "Merge main into work", "ticket_id": "task-merge-main"}
