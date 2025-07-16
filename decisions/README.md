@@ -50,3 +50,4 @@ This directory stores ADRs for the project. The index below lists each file in c
 - [celery_worker_microservice_adr.md](celery_worker_microservice_adr.md)
 - [celery_worker_implementation_adr.md](celery_worker_implementation_adr.md)
 - [pipeline_config_adr.md](pipeline_config_adr.md)
+- [display_results_ui_adr.md](display_results_ui_adr.md)

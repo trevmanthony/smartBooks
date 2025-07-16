@@ -46,7 +46,7 @@ document through an OCR and LLM pipeline. During local testing, stub clients
 demonstrate the workflow.
 
 
-To run the full pipeline with Document AI and o4-mini, set the following environment variables:
+To run the full pipeline with Document AI and o4-mini, copy `.env.example` to `.env` and set the following variables:
 
 ```bash
 DOC_AI_PROJECT_ID=<your-project>
