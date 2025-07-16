@@ -8,6 +8,7 @@ import sys
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
+from fastapi.concurrency import run_in_threadpool
 from fastapi.testclient import TestClient
 from bs4 import BeautifulSoup
 from app import app, DB_PATH
@@ -104,3 +105,39 @@ def test_env_db_path(tmp_path, monkeypatch):
             "SELECT filename FROM files WHERE filename=?", ("purge.pdf",)
         )
         assert cur.fetchone() is None
+
+
+def test_upload_uses_threadpool(tmp_path, monkeypatch):
+    """upload_files should call run_in_threadpool for DB writes."""
+    pdf = tmp_path / "thread.pdf"
+    pdf.write_bytes(b"%PDF-1.4")
+    with pdf.open("rb") as f:
+        files = {"files": ("thread.pdf", f, "application/pdf")}
+        with monkeypatch.context() as m:
+            called = False
+
+            async def wrapper(func, *args, **kwargs):
+                nonlocal called
+                called = True
+                return await run_in_threadpool(func, *args, **kwargs)
+
+            m.setattr("app.run_in_threadpool", wrapper)
+            response = client.post("/upload", files=files)
+    assert response.status_code == 200
+    assert called
+
+
+def test_purge_uses_threadpool(monkeypatch):
+    """purge_database should call run_in_threadpool."""
+    with monkeypatch.context() as m:
+        called = False
+
+        async def wrapper(func, *args, **kwargs):
+            nonlocal called
+            called = True
+            return await run_in_threadpool(func, *args, **kwargs)
+
+        m.setattr("app.run_in_threadpool", wrapper)
+        response = client.post("/purge")
+    assert response.status_code == 200
+    assert called
