@@ -8,6 +8,7 @@ def test_dockerignore_contains_expected_patterns():
     dockerignore_path = Path(__file__).resolve().parents[1] / ".dockerignore"
     assert dockerignore_path.exists()
     content = dockerignore_path.read_text().splitlines()
-    expected = {".git", "__pycache__/", ".pytest_cache/", "tests/", "venv/", ".venv/"}
+    expected = {".git", "__pycache__/", ".pytest_cache/", "venv/", ".venv/"}
     for pattern in expected:
         assert pattern in content
+    assert "tests/" not in content
