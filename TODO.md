@@ -6,5 +6,6 @@
 - [x] Evaluate async database options like SQLModel or SQLAlchemy
 - [ ] Implement SQLModel with SQLAlchemy's async extension
 - [x] Choose an integration approach for Document AI and o4-mini
-- [ ] Prototype LangChain pipeline using Document AI and o4-mini
+- [x] Prototype LangChain pipeline using Document AI and o4-mini
+- [ ] Evaluate Celery for distributed task processing
 - [x] Review Docker ADRs for outdated steps

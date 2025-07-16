@@ -42,3 +42,5 @@ This directory stores ADRs for the project. The index below lists each file in c
 - [sqlmodel_async_extension_adr.md](sqlmodel_async_extension_adr.md)
 - [doc_ai_o4mini_langchain_decision_adr.md](doc_ai_o4mini_langchain_decision_adr.md)
 - [docker_adrs_review_adr.md](docker_adrs_review_adr.md)
+- [async_pipeline_adr.md](async_pipeline_adr.md)
+- [stubbed_pipeline_adr.md](stubbed_pipeline_adr.md)

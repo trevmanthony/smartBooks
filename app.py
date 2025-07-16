@@ -4,10 +4,18 @@ import os
 import sqlite3
 from typing import List
 
-from fastapi import FastAPI, UploadFile, File, Request, HTTPException
+from fastapi import (
+    FastAPI,
+    UploadFile,
+    File,
+    Request,
+    HTTPException,
+    BackgroundTasks,
+)
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.concurrency import run_in_threadpool
+from pipeline import AsyncPipeline, StubLLMClient, StubOCRClient
 from config import settings
 
 app = FastAPI()
@@ -33,6 +41,9 @@ def init_db() -> None:
 
 
 init_db()
+
+# Prototype asynchronous pipeline using stub clients
+pipeline = AsyncPipeline(StubOCRClient(), StubLLMClient())
 
 
 DEFAULT_CONTEXT = {
@@ -99,3 +110,21 @@ async def purge_database():
 
     await run_in_threadpool(purge)
     return {"status": "purged"}
+
+
+@app.post("/process/{file_id}")
+async def process_file(file_id: int, background_tasks: BackgroundTasks):
+    """Run the OCR and LLM pipeline for a stored file."""
+
+    def fetch_file() -> bytes | None:
+        with sqlite3.connect(settings.db_path) as conn:
+            cur = conn.execute("SELECT content FROM files WHERE id=?", (file_id,))
+            row = cur.fetchone()
+            return row[0] if row else None
+
+    data = await run_in_threadpool(fetch_file)
+    if data is None:
+        raise HTTPException(status_code=404, detail="File not found")
+
+    background_tasks.add_task(pipeline.run, data)
+    return {"status": "processing"}
