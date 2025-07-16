@@ -24,10 +24,10 @@ pip-compile requirements.in --output-file requirements.txt
 
 ## Configuration
 The application reads configuration from environment variables using a
-Pydantic `Settings` class. Uploaded file records are stored in a SQLite
-database. By default the file is created at `data/database.db`, but you can
-override this location with the `DB_PATH` variable. The maximum allowed upload
-size can also be changed via `MAX_FILE_SIZE`:
+Pydantic `Settings` class. Uploaded file records are stored with SQLModel using
+SQLite in async mode. By default the file is created at `data/database.db`, but
+you can override this location with the `DB_PATH` variable. The maximum allowed
+upload size can also be changed via `MAX_FILE_SIZE`:
 
 ```bash
 DB_PATH=/tmp/custom.db MAX_FILE_SIZE=$((8*1024*1024)) uvicorn app:app --reload

@@ -1,7 +1,6 @@
 """Web application for smartBooks."""
 
 import os
-import sqlite3
 from typing import List
 
 from fastapi import (
@@ -13,7 +12,9 @@ from fastapi import (
 )
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from fastapi.concurrency import run_in_threadpool
+from sqlmodel import delete
+from database import AsyncSessionLocal, File as DBFile, Extraction
+import database
 from worker import process_file_task
 from config import settings
 
@@ -22,24 +23,13 @@ app = FastAPI()
 TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "templates")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
-
-def init_db() -> None:
-    """Create the files table if it doesn't exist and ensure `content` column."""
-    os.makedirs(settings.db_path.parent, exist_ok=True)
-    with sqlite3.connect(settings.db_path) as conn:
-        conn.execute(
-            (
-                "CREATE TABLE IF NOT EXISTS files ("
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                "filename TEXT, content BLOB)"
-            )
-        )
-        cols = [row[1] for row in conn.execute("PRAGMA table_info(files)")]
-        if "content" not in cols:
-            conn.execute("ALTER TABLE files ADD COLUMN content BLOB")
+os.makedirs(settings.db_path.parent, exist_ok=True)
 
 
-init_db()
+@app.on_event("startup")
+async def on_startup() -> None:
+    """Initialize the database on startup."""
+    await database.init_db_async()
 
 
 DEFAULT_CONTEXT = {
@@ -83,16 +73,11 @@ async def upload_files(files: List[UploadFile] = File(...)):
         content = await file.read()
         if len(content) > settings.max_file_size:
             raise HTTPException(status_code=400, detail="File too large")
-        records.append((file.filename, sqlite3.Binary(content)))
+        records.append(DBFile(filename=file.filename, content=content))
 
-    def insert_records() -> None:
-        with sqlite3.connect(settings.db_path) as conn:
-            conn.executemany(
-                "INSERT INTO files(filename, content) VALUES (?, ?)",
-                records,
-            )
-
-    await run_in_threadpool(insert_records)
+    async with AsyncSessionLocal() as session:
+        session.add_all(records)
+        await session.commit()
     return {"filenames": [file.filename for file in files]}
 
 
@@ -100,11 +85,10 @@ async def upload_files(files: List[UploadFile] = File(...)):
 async def purge_database():
     """Remove all uploaded file records."""
 
-    def purge() -> None:
-        with sqlite3.connect(settings.db_path) as conn:
-            conn.execute("DELETE FROM files")
-
-    await run_in_threadpool(purge)
+    async with AsyncSessionLocal() as session:
+        await session.exec(delete(Extraction))
+        await session.exec(delete(DBFile))
+        await session.commit()
     return {"status": "purged"}
 
 
@@ -112,15 +96,10 @@ async def purge_database():
 async def process_file(file_id: int):
     """Run the OCR and LLM pipeline for a stored file."""
 
-    def fetch_file() -> bytes | None:
-        with sqlite3.connect(settings.db_path) as conn:
-            cur = conn.execute("SELECT content FROM files WHERE id=?", (file_id,))
-            row = cur.fetchone()
-            return row[0] if row else None
+    async with AsyncSessionLocal() as session:
+        file = await session.get(DBFile, file_id)
+        if file is None:
+            raise HTTPException(status_code=404, detail="File not found")
 
-    data = await run_in_threadpool(fetch_file)
-    if data is None:
-        raise HTTPException(status_code=404, detail="File not found")
-
-    process_file_task.delay(data)
+    process_file_task.delay(file_id)
     return {"status": "queued"}

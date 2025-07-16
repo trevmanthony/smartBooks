@@ -1,9 +1,9 @@
 """Browser-based tests for index.html JavaScript."""
 
-# pylint: disable=redefined-outer-name, import-error
+# pylint: disable=redefined-outer-name, import-error, wrong-import-position
 
 from __future__ import annotations
-import sqlite3
+import asyncio
 import subprocess
 import sys
 import time
@@ -16,7 +16,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
-from config import settings  # pylint: disable=wrong-import-position
+from sqlmodel import select
+from database import AsyncSessionLocal, File as DBFile
 
 PORT = 8001
 SERVER_CMD = ["uvicorn", "app:app", "--port", str(PORT)]
@@ -46,9 +47,13 @@ def driver(server):  # pylint: disable=unused-argument
 
 def count_files() -> int:
     """Return current count of uploaded files."""
-    with sqlite3.connect(settings.db_path) as conn:
-        cur = conn.execute("SELECT COUNT(*) FROM files")
-        return cur.fetchone()[0]
+
+    async def _count() -> int:
+        async with AsyncSessionLocal() as session:
+            result = await session.exec(select(DBFile))
+            return len(result.all())
+
+    return asyncio.run(_count())
 
 
 def test_upload_via_browser(driver, tmp_path):
@@ -72,8 +77,13 @@ def test_upload_via_browser(driver, tmp_path):
 
 def test_purge_via_browser(driver):
     """Clicking Purge DB should remove records."""
-    with sqlite3.connect(settings.db_path) as conn:
-        conn.execute("INSERT INTO files(filename) VALUES ('dummy.pdf')")
+
+    async def add_dummy() -> None:
+        async with AsyncSessionLocal() as session:
+            session.add(DBFile(filename="dummy.pdf", content=b"x"))
+            await session.commit()
+
+    asyncio.run(add_dummy())
     assert count_files() > 0
     driver.get(f"http://localhost:{PORT}/")
     driver.find_element(By.CSS_SELECTOR, "button[onclick='purgeDatabase()']").click()

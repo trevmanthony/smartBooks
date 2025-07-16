@@ -10,6 +10,7 @@ from pipeline import (
     create_langchain_pipeline,
 )
 from config import PipelineConfig
+from database import AsyncSessionLocal, File as DBFile, Extraction
 
 celery_app = Celery(
     "smartbooks",
@@ -23,6 +24,16 @@ else:
 
 
 @celery_app.task
-def process_file_task(data: bytes) -> str:
-    """Run the OCR+LLM pipeline inside Celery."""
-    return asyncio.run(pipeline.run(data))
+def process_file_task(file_id: int) -> None:
+    """Run the pipeline and store results in the database."""
+
+    async def run_task() -> None:
+        async with AsyncSessionLocal() as session:
+            file = await session.get(DBFile, file_id)
+            if file is None:
+                return
+            result = await pipeline.run(file.content)
+            session.add(Extraction(file_id=file_id, result_json=result))
+            await session.commit()
+
+    asyncio.run(run_task())

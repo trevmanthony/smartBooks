@@ -17,3 +17,5 @@ google-cloud-documentai
 structlog
 llama-cpp-python
 celery
+sqlmodel
+aiosqlite
