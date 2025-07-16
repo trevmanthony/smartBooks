@@ -45,7 +45,11 @@ class AsyncPipeline:
     async def run(self, data: bytes) -> str:
         """Run OCR then LLM on the given file bytes."""
         text = await self.ocr.extract(data)
-        return await self.llm.generate(text)
+        prompt = (
+            "Extract the invoice number, date, and total from this text as JSON.\n"
+            f"{text}"
+        )
+        return await self.llm.generate(prompt)
 
 
 class StubOCRClient:
