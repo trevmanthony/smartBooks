@@ -11,7 +11,7 @@ This directory stores ADRs for the project. The index below lists each file in c
 - [database_directory_adr.md](database_directory_adr.md)
 - [docker_ci_adr.md](docker_ci_adr.md)
 - [docker_ignored_tests_adr.md](docker_ignored_tests_adr.md) — *superseded by* [include_tests_in_docker_adr.md](include_tests_in_docker_adr.md)
-- [docker_pylint_error_adr.md](docker_pylint_error_adr.md)
+- [docker_pylint_error_adr.md](docker_pylint_error_adr.md) — *superseded by* [include_tests_in_docker_adr.md](include_tests_in_docker_adr.md)
 - [dockerignore_adr.md](dockerignore_adr.md) — *superseded by* [include_tests_in_docker_adr.md](include_tests_in_docker_adr.md)
 - [env_db_path_adr.md](env_db_path_adr.md)
 - [external_parsing_adr.md](external_parsing_adr.md)
@@ -41,3 +41,4 @@ This directory stores ADRs for the project. The index below lists each file in c
 - [wait_for_db_update_adr.md](wait_for_db_update_adr.md)
 - [sqlmodel_async_extension_adr.md](sqlmodel_async_extension_adr.md)
 - [doc_ai_o4mini_langchain_decision_adr.md](doc_ai_o4mini_langchain_decision_adr.md)
+- [docker_adrs_review_adr.md](docker_adrs_review_adr.md)
