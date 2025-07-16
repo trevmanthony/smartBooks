@@ -29,6 +29,8 @@ for more on environment-based configuration. For SQLite file management tips,
 refer to the [SQLite documentation](https://sqlite.org/whentouse.html).
 
 Uploaded files are stored directly in the local SQLite database as BLOBs.
+Each individual upload is limited to 16&nbsp;MB and must use the correct PDF or
+CSV MIME type.
 
 
 ## Tests

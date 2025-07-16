@@ -66,6 +66,7 @@ def test_upload_invalid_file(client_fixture, tmp_path):
     assert response.status_code == 400
 
 
+
 def test_upload_invalid_mime_type(client_fixture, tmp_path):
     """Uploading with valid extension but wrong MIME type should fail."""
     pdf_file = tmp_path / "fake.pdf"
@@ -89,6 +90,7 @@ def test_upload_too_large(client_fixture, tmp_path):
 
 
 def count_files(db_path: str) -> int:
+
     """Return number of stored file records."""
     with sqlite3.connect(db_path) as conn:
         cur = conn.execute("SELECT COUNT(*) FROM files")
@@ -168,4 +170,50 @@ def test_override_db_path(tmp_path):
     assert response.status_code == 200
     assert custom_path.exists()
 
+
     app.dependency_overrides.clear()
+
+    monkeypatch.delenv("DB_PATH", raising=False)
+    importlib.reload(app_module)
+
+    with sqlite3.connect(DB_PATH) as conn:
+        cur = conn.execute(
+            "SELECT filename FROM files WHERE filename=?", ("purge.pdf",)
+        )
+        assert cur.fetchone() is None
+
+
+def test_upload_uses_threadpool(tmp_path, monkeypatch):
+    """upload_files should call run_in_threadpool for DB writes."""
+    pdf = tmp_path / "thread.pdf"
+    pdf.write_bytes(b"%PDF-1.4")
+    with pdf.open("rb") as f:
+        files = {"files": ("thread.pdf", f, "application/pdf")}
+        with monkeypatch.context() as m:
+            called = False
+
+            async def wrapper(func, *args, **kwargs):
+                nonlocal called
+                called = True
+                return await run_in_threadpool(func, *args, **kwargs)
+
+            m.setattr("app.run_in_threadpool", wrapper)
+            response = client.post("/upload", files=files)
+    assert response.status_code == 200
+    assert called
+
+
+def test_purge_uses_threadpool(monkeypatch):
+    """purge_database should call run_in_threadpool."""
+    with monkeypatch.context() as m:
+        called = False
+
+        async def wrapper(func, *args, **kwargs):
+            nonlocal called
+            called = True
+            return await run_in_threadpool(func, *args, **kwargs)
+
+        m.setattr("app.run_in_threadpool", wrapper)
+        response = client.post("/purge")
+    assert response.status_code == 200
+    assert called

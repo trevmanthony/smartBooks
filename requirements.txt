@@ -7,3 +7,6 @@ black
 pylint
 python-multipart
 beautifulsoup4
+
+selenium
+webdriver-manager

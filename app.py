@@ -20,6 +20,7 @@ app.state.db_path = os.getenv("DB_PATH", DEFAULT_DB_PATH)
 MAX_FILE_SIZE = 16 * 1024 * 1024  # 16 MB
 
 
+
 def init_db(db_path: str) -> None:
     """Create the files table if it doesn't exist and ensure `content` column."""
     os.makedirs(os.path.dirname(db_path), exist_ok=True)
@@ -90,7 +91,9 @@ async def upload_files(
         records.append((file.filename, sqlite3.Binary(content)))
 
     def insert_records() -> None:
-        with sqlite3.connect(db_path) as conn:
+
+        with sqlite3.connect(DB_PATH) as conn:
+
             conn.executemany(
                 "INSERT INTO files(filename, content) VALUES (?, ?)",
                 records,
@@ -105,7 +108,9 @@ async def purge_database(db_path: str = Depends(get_db_path)):
     """Remove all uploaded file records."""
 
     def purge() -> None:
+
         with sqlite3.connect(db_path) as conn:
+
             conn.execute("DELETE FROM files")
 
     await run_in_threadpool(purge)
