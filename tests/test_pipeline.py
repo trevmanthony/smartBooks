@@ -16,7 +16,11 @@ def test_pipeline_stub_run():
     """Pipeline should combine stub components."""
     pl = AsyncPipeline(StubOCRClient(), StubLLMClient())
     result = asyncio.run(pl.run(b"data"))
-    assert result == "processed: stub text"
+    expected_prompt = (
+        "Extract the invoice number, date, and total from this text as JSON.\n"
+        "stub text"
+    )
+    assert result == f"processed: {expected_prompt}"
 
 
 def test_process_endpoint(tmp_path, monkeypatch):
@@ -103,4 +107,8 @@ def test_create_langchain_pipeline(monkeypatch):
 
     pipeline = pl.create_langchain_pipeline()
     result = asyncio.run(pipeline.run(b"data"))
-    assert result == "ocr text processed"
+    expected_prompt = (
+        "Extract the invoice number, date, and total from this text as JSON.\n"
+        "ocr text"
+    )
+    assert result == f"{expected_prompt} processed"
