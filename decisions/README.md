@@ -40,3 +40,4 @@ This directory stores ADRs for the project. The index below lists each file in c
 - [uploads_blob_storage_adr.md](uploads_blob_storage_adr.md)
 - [wait_for_db_update_adr.md](wait_for_db_update_adr.md)
 - [sqlmodel_async_extension_adr.md](sqlmodel_async_extension_adr.md)
+- [doc_ai_o4mini_langchain_decision_adr.md](doc_ai_o4mini_langchain_decision_adr.md)
