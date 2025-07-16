@@ -7,3 +7,7 @@ black
 pylint
 python-multipart
 beautifulsoup4
+celery
+redis
+selenium
+webdriver-manager

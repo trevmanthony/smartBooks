@@ -5,9 +5,13 @@
 from pathlib import Path
 import sqlite3
 import sys
+import os
+
+os.environ.setdefault("CELERY_TASK_ALWAYS_EAGER", "true")
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
+from fastapi.concurrency import run_in_threadpool
 from fastapi.testclient import TestClient
 from bs4 import BeautifulSoup
 from app import app, DB_PATH
@@ -48,6 +52,26 @@ def test_upload_invalid_file(tmp_path):
     txt_file.write_text("dummy")
     with txt_file.open("rb") as f:
         files = {"files": ("test.txt", f, "text/plain")}
+        response = client.post("/upload", files=files)
+    assert response.status_code == 400
+
+
+def test_upload_invalid_mime_type(tmp_path):
+    """Uploading with valid extension but wrong MIME type should fail."""
+    pdf_file = tmp_path / "fake.pdf"
+    pdf_file.write_bytes(b"%PDF-1.4")
+    with pdf_file.open("rb") as f:
+        files = {"files": ("fake.pdf", f, "text/plain")}
+        response = client.post("/upload", files=files)
+    assert response.status_code == 400
+
+
+def test_upload_too_large(tmp_path):
+    """Files larger than the 16 MB limit should be rejected."""
+    big_file = tmp_path / "big.pdf"
+    big_file.write_bytes(b"0" * (16 * 1024 * 1024 + 1))
+    with big_file.open("rb") as f:
+        files = {"files": ("big.pdf", f, "application/pdf")}
         response = client.post("/upload", files=files)
     assert response.status_code == 400
 
@@ -104,3 +128,38 @@ def test_env_db_path(tmp_path, monkeypatch):
             "SELECT filename FROM files WHERE filename=?", ("purge.pdf",)
         )
         assert cur.fetchone() is None
+
+
+def test_upload_uses_celery(tmp_path, monkeypatch):
+    """upload_files should delegate storage to Celery."""
+    pdf = tmp_path / "celery.pdf"
+    pdf.write_bytes(b"%PDF-1.4")
+    with pdf.open("rb") as f:
+        files = {"files": ("celery.pdf", f, "application/pdf")}
+        with monkeypatch.context() as m:
+            called = False
+
+            def fake_delay(filename, content):  # pylint: disable=unused-argument
+                nonlocal called
+                called = True
+
+            m.setattr("app.store_file.delay", fake_delay)
+            response = client.post("/upload", files=files)
+    assert response.status_code == 200
+    assert called
+
+
+def test_purge_uses_threadpool(monkeypatch):
+    """purge_database should call run_in_threadpool."""
+    with monkeypatch.context() as m:
+        called = False
+
+        async def wrapper(func, *args, **kwargs):
+            nonlocal called
+            called = True
+            return await run_in_threadpool(func, *args, **kwargs)
+
+        m.setattr("app.run_in_threadpool", wrapper)
+        response = client.post("/purge")
+    assert response.status_code == 200
+    assert called

@@ -13,6 +13,10 @@
    ```bash
    uvicorn app:app --reload
    ```
+3. Start a Celery worker (requires a Redis server):
+   ```bash
+   CELERY_BROKER_URL=redis://localhost:6379/0 celery -A tasks worker --loglevel=info
+   ```
 
 
 ## Configuration
@@ -29,6 +33,8 @@ for more on environment-based configuration. For SQLite file management tips,
 refer to the [SQLite documentation](https://sqlite.org/whentouse.html).
 
 Uploaded files are stored directly in the local SQLite database as BLOBs.
+Each individual upload is limited to 16&nbsp;MB and must use the correct PDF or
+CSV MIME type.
 
 
 ## Tests
