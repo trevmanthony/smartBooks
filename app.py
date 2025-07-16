@@ -7,22 +7,33 @@ from typing import List
 from fastapi import FastAPI, UploadFile, File, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.concurrency import run_in_threadpool
 
 app = FastAPI()
 
 TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "templates")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "data", "database.db")
+DEFAULT_DB_PATH = os.path.join(os.path.dirname(__file__), "data", "database.db")
+DB_PATH = os.getenv("DB_PATH", DEFAULT_DB_PATH)
+
+MAX_FILE_SIZE = 16 * 1024 * 1024  # 16 MB
 
 
 def init_db() -> None:
-    """Create the files table if it doesn't exist."""
+    """Create the files table if it doesn't exist and ensure `content` column."""
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     with sqlite3.connect(DB_PATH) as conn:
         conn.execute(
-            "CREATE TABLE IF NOT EXISTS files (id INTEGER PRIMARY KEY AUTOINCREMENT, filename TEXT)"
+            (
+                "CREATE TABLE IF NOT EXISTS files ("
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                "filename TEXT, content BLOB)"
+            )
         )
+        cols = [row[1] for row in conn.execute("PRAGMA table_info(files)")]
+        if "content" not in cols:
+            conn.execute("ALTER TABLE files ADD COLUMN content BLOB")
 
 
 init_db()
@@ -55,24 +66,40 @@ async def read_root(request: Request):
 
 @app.post("/upload")
 async def upload_files(files: List[UploadFile] = File(...)):
-    """Accept PDF and CSV files and store their names."""
+    """Accept PDF and CSV files and store their contents."""
+    allowed_types = {"application/pdf", "text/csv"}
+    records = []
     for file in files:
         if not (
             file.filename.lower().endswith(".pdf")
             or file.filename.lower().endswith(".csv")
         ):
             raise HTTPException(status_code=400, detail="Invalid file type")
-    with sqlite3.connect(DB_PATH) as conn:
-        conn.executemany(
-            "INSERT INTO files(filename) VALUES (?)",
-            [(file.filename,) for file in files],
-        )
+        if file.content_type not in allowed_types:
+            raise HTTPException(status_code=400, detail="Invalid MIME type")
+        content = await file.read()
+        if len(content) > MAX_FILE_SIZE:
+            raise HTTPException(status_code=400, detail="File too large")
+        records.append((file.filename, sqlite3.Binary(content)))
+
+    def insert_records() -> None:
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.executemany(
+                "INSERT INTO files(filename, content) VALUES (?, ?)",
+                records,
+            )
+
+    await run_in_threadpool(insert_records)
     return {"filenames": [file.filename for file in files]}
 
 
 @app.post("/purge")
 async def purge_database():
     """Remove all uploaded file records."""
-    with sqlite3.connect(DB_PATH) as conn:
-        conn.execute("DELETE FROM files")
+
+    def purge() -> None:
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.execute("DELETE FROM files")
+
+    await run_in_threadpool(purge)
     return {"status": "purged"}
