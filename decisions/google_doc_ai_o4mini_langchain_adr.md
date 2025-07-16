@@ -1,4 +1,4 @@
-# ADR: Plan integrating Google Document AI OCR and o4-mini via LangChain
+# ADR: Choose direct integration for Document AI and o4-mini
 
 ## Context
 We want to add OCR capabilities using Google Document AI and leverage the o4-mini language model through LangChain. This will let the app extract text from scanned PDFs and process it with a lightweight LLM.
@@ -22,4 +22,15 @@ We want to add OCR capabilities using Google Document AI and leverage the o4-min
    - *Pros:* Less load on our server; scalable.
    - *Cons:* Adds latency and external dependencies.
 
-No final decision is made yet; these options will be evaluated further.
+## Decision
+Proceed with **Option A – Direct Integration with Python Client Libraries**.
+Use `google-cloud-documentai` for OCR and run o4-mini locally via
+`llama-cpp-python` exposed through LangChain's `LlamaCpp`. Credentials will
+be loaded from environment variables.
+
+## Links
+- <https://cloud.google.com/document-ai/docs/send-request>
+- <https://github.com/googleapis/python-documentai>
+- <https://github.com/abetlen/llama-cpp-python>
+- <https://python.langchain.com/docs/integrations/llms/llamacpp>
+- <https://huggingface.co/TheBloke/o4-mini-3B-GGUF>
