@@ -10,12 +10,11 @@ from fastapi import (
     File,
     Request,
     HTTPException,
-    BackgroundTasks,
 )
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.concurrency import run_in_threadpool
-from pipeline import AsyncPipeline, StubLLMClient, StubOCRClient
+from worker import process_file_task
 from config import settings
 
 app = FastAPI()
@@ -41,9 +40,6 @@ def init_db() -> None:
 
 
 init_db()
-
-# Prototype asynchronous pipeline using stub clients
-pipeline = AsyncPipeline(StubOCRClient(), StubLLMClient())
 
 
 DEFAULT_CONTEXT = {
@@ -113,7 +109,7 @@ async def purge_database():
 
 
 @app.post("/process/{file_id}")
-async def process_file(file_id: int, background_tasks: BackgroundTasks):
+async def process_file(file_id: int):
     """Run the OCR and LLM pipeline for a stored file."""
 
     def fetch_file() -> bytes | None:
@@ -126,5 +122,5 @@ async def process_file(file_id: int, background_tasks: BackgroundTasks):
     if data is None:
         raise HTTPException(status_code=404, detail="File not found")
 
-    background_tasks.add_task(pipeline.run, data)
-    return {"status": "processing"}
+    process_file_task.delay(data)
+    return {"status": "queued"}

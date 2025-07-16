@@ -43,15 +43,16 @@ def test_process_endpoint(tmp_path, monkeypatch):
 
     called = False
 
-    async def fake_run(data: bytes) -> None:
+    def fake_delay(data: bytes) -> None:
         nonlocal called
         called = True
         assert data == b"%PDF-1.4"
 
     with monkeypatch.context() as m:
-        m.setattr(app_module.__name__ + ".pipeline.run", fake_run)
+        m.setattr(app_module.process_file_task, "delay", fake_delay)
         response = client_env.post(f"/process/{file_id}")
     assert response.status_code == 200
+    assert response.json() == {"status": "queued"}
     assert called
 
 
