@@ -45,3 +45,4 @@ This directory stores ADRs for the project. The index below lists each file in c
 - [async_pipeline_adr.md](async_pipeline_adr.md)
 - [stubbed_pipeline_adr.md](stubbed_pipeline_adr.md)
 - [structured_logging_structlog_adr.md](structured_logging_structlog_adr.md)
+- [langchain_adoption_adr.md](langchain_adoption_adr.md)

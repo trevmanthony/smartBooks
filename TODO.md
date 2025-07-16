@@ -1,7 +1,8 @@
 # TODO
 
 <!-- Add new tasks here using the format `- [ ] description` -->
-- [ ] Re-evaluate LangChain and LlamaIndex once custom LLM features expand
+- [x] Re-evaluate LangChain and LlamaIndex once custom LLM features expand
+- [ ] Implement LangChain pipeline with Document AI and o4-mini
 - [x] Introduce Pydantic BaseSettings for environment configuration
 - [x] Evaluate async database options like SQLModel or SQLAlchemy
 - [ ] Implement SQLModel with SQLAlchemy's async extension
