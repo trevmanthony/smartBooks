@@ -46,3 +46,4 @@
 {"timestamp": "2025-07-16T19:14:34Z", "action": "Add structured logging ADR and tests", "ticket_id": "task-structlog-adr"}
 {"timestamp": "2025-07-16T19:32:32Z", "action": "Add LangChain adoption ADR and update TODO", "ticket_id": "task-langchain-adoption"}
 {"timestamp": "2025-07-16T20:00:26Z", "action": "Implement LangChain Document AI pipeline with ADR", "ticket_id": "task-doc-ai-pipeline"}
+{"timestamp": "2025-07-16T20:23:54Z", "action": "Add Celery worker microservice ADR", "ticket_id": "task-celery-microservice"}
