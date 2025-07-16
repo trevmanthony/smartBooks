@@ -10,6 +10,8 @@ aiohttp==3.12.14
     # via langchain-community
 aiosignal==1.4.0
     # via aiohttp
+aiosqlite==0.21.0
+    # via -r requirements.in
 amqp==5.3.1
     # via kombu
 annotated-types==0.7.0
@@ -214,6 +216,7 @@ pydantic==2.11.7
     #   langchain-core
     #   langsmith
     #   pydantic-settings
+    #   sqlmodel
 pydantic-core==2.33.2
     # via pydantic
 pydantic-settings==2.10.1
@@ -270,6 +273,9 @@ sqlalchemy==2.0.41
     # via
     #   langchain
     #   langchain-community
+    #   sqlmodel
+sqlmodel==0.0.24
+    # via -r requirements.in
 starlette==0.47.1
     # via fastapi
 structlog==25.4.0
@@ -289,6 +295,7 @@ trio-websocket==0.12.2
 typing-extensions==4.14.1
     # via
     #   aiosignal
+    #   aiosqlite
     #   anyio
     #   beautifulsoup4
     #   fastapi

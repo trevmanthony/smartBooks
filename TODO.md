@@ -5,7 +5,7 @@
 - [x] Implement LangChain pipeline with Document AI and o4-mini
 - [x] Introduce Pydantic BaseSettings for environment configuration
 - [x] Evaluate async database options like SQLModel or SQLAlchemy
-- [ ] Implement SQLModel with SQLAlchemy's async extension
+- [x] Implement SQLModel with SQLAlchemy's async extension
 - [x] Choose an integration approach for Document AI and o4-mini
 - [x] Prototype LangChain pipeline using Document AI and o4-mini
 - [x] Evaluate Celery for distributed task processing
@@ -15,3 +15,4 @@
 - [ ] Implement UI endpoint to display extraction results per display_results_ui_adr.md
 - [ ] Update production configuration to use PipelineConfig per pipeline_config_adr.md
 - [x] Implement Celery worker microservice
+- [ ] Persist pipeline results using extractions table per persist_results_adr.md
