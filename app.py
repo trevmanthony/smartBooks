@@ -7,7 +7,7 @@ from typing import List
 from fastapi import FastAPI, UploadFile, File, Request, HTTPException, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from starlette.concurrency import run_in_threadpool
+from fastapi.concurrency import run_in_threadpool
 
 app = FastAPI()
 
