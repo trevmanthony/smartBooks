@@ -19,8 +19,20 @@
 {"timestamp": "2025-07-15T21:57:48Z", "action": "Expose purgeDatabase on window and add tests", "ticket_id": "task-inline-handler"}
 
 {"timestamp": "2025-07-15T22:12:37Z", "action": "Document Docker tests exclusion causing pylint failure", "ticket_id": "task-docker-tests"}
+
 {"timestamp": "2025-07-15T22:39:11Z", "action": "Add Selenium browser tests and dependencies", "ticket_id": "task-frontend-selenium"}
 {"timestamp": "2025-07-15T23:26:26Z", "action": "Wait for modal in Selenium tests", "ticket_id": "task-modal-wait"}
 {"timestamp": "2025-07-15T23:55:20Z", "action": "Include tests in Docker image to fix Pylint", "ticket_id": "task-pylint-docker"}
 {"timestamp": "2025-07-16T00:12:31Z", "action": "Fix variable name merge conflict in test", "ticket_id": "task-modal-error"}
 {"timestamp": "2025-07-16T00:13:00Z", "action": "Document merge variable fix ADR", "ticket_id": "task-modal-error"}
+
+
+{"timestamp": "2025-07-15T22:26:25Z", "action": "Parameterize DB path via env var, update docs and tests", "ticket_id": "task-parameterize-db"}
+
+{"timestamp": "2025-07-15T22:30:41Z", "action": "Store uploads as BLOBs, update code, tests, docs, ADR", "ticket_id": "task-store-uploads-blob"}
+
+{"timestamp": "2025-07-15T22:47:23Z", "action": "Include tests in Docker image and update CI docs", "ticket_id": "task-docker-tests-fix"}
+
+{"timestamp": "2025-07-15T23:57:56Z", "action": "Wrap SQLite operations in run_in_threadpool, add tests and ADR", "ticket_id": "task-threadpool"}
+
+{"timestamp": "2025-07-15T23:54:28Z", "action": "Enforce upload size and MIME checks, update docs and tests", "ticket_id": "task-upload-validation"}
