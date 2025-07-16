@@ -5,6 +5,9 @@
 from pathlib import Path
 import sqlite3
 import sys
+import os
+
+os.environ.setdefault("CELERY_TASK_ALWAYS_EAGER", "true")
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
@@ -48,6 +51,28 @@ def test_upload_invalid_file(tmp_path):
     txt_file.write_text("dummy")
     with txt_file.open("rb") as f:
         files = {"files": ("test.txt", f, "text/plain")}
+        response = client.post("/upload", files=files)
+    assert response.status_code == 400
+
+
+def test_upload_invalid_mime(tmp_path):
+    """Uploading a PDF with wrong MIME type should fail."""
+    pdf_file = tmp_path / "badmime.pdf"
+    pdf_file.write_bytes(b"%PDF-1.4")
+    with pdf_file.open("rb") as f:
+        files = {"files": ("badmime.pdf", f, "text/plain")}
+        response = client.post("/upload", files=files)
+    assert response.status_code == 400
+
+
+def test_upload_file_too_large(tmp_path):
+    """Uploading a file exceeding MAX_FILE_SIZE should fail."""
+    from app import MAX_FILE_SIZE
+
+    large_file = tmp_path / "big.pdf"
+    large_file.write_bytes(b"0" * (MAX_FILE_SIZE + 1))
+    with large_file.open("rb") as f:
+        files = {"files": ("big.pdf", f, "application/pdf")}
         response = client.post("/upload", files=files)
     assert response.status_code == 400
 

@@ -13,6 +13,10 @@
    ```bash
    uvicorn app:app --reload
    ```
+3. Start a Celery worker (requires a Redis server):
+   ```bash
+   CELERY_BROKER_URL=redis://localhost:6379/0 celery -A tasks worker --loglevel=info
+   ```
 
 
 ## Configuration
