@@ -7,12 +7,19 @@
    ```bash
    python3 -m venv venv
    source venv/bin/activate
-   pip install -r requirements.txt
+   pip install --no-cache-dir -r requirements.txt
    ```
 2. Run the application:
    ```bash
    uvicorn app:app --reload
    ```
+
+### Updating dependencies
+Install pip-tools and recompile the lock file when updating packages:
+```bash
+pip install --no-cache-dir pip-tools
+pip-compile requirements.in --output-file requirements.txt
+```
 
 
 ## Configuration
