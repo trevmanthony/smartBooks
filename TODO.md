@@ -9,3 +9,4 @@
 - [x] Prototype LangChain pipeline using Document AI and o4-mini
 - [ ] Evaluate Celery for distributed task processing
 - [x] Review Docker ADRs for outdated steps
+- [ ] Implement structured JSON logging as outlined in structured_logging_structlog_adr.md

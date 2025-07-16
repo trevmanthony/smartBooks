@@ -14,3 +14,4 @@ webdriver-manager
 langchain
 langchain-community
 google-cloud-documentai
+structlog
