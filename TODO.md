@@ -5,3 +5,4 @@
 - [x] Introduce Pydantic BaseSettings for environment configuration
 - [ ] Evaluate async database options like SQLModel or SQLAlchemy
 - [ ] Choose an integration approach for Document AI and o4-mini
+- [ ] Review Docker ADRs for outdated steps
