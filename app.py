@@ -16,6 +16,8 @@ templates = Jinja2Templates(directory=TEMPLATES_DIR)
 DEFAULT_DB_PATH = os.path.join(os.path.dirname(__file__), "data", "database.db")
 DB_PATH = os.getenv("DB_PATH", DEFAULT_DB_PATH)
 
+MAX_FILE_SIZE = 16 * 1024 * 1024  # 16 MB
+
 
 def init_db() -> None:
     """Create the files table if it doesn't exist and ensure `content` column."""
@@ -64,6 +66,7 @@ async def read_root(request: Request):
 @app.post("/upload")
 async def upload_files(files: List[UploadFile] = File(...)):
     """Accept PDF and CSV files and store their contents."""
+    allowed_types = {"application/pdf", "text/csv"}
     records = []
     for file in files:
         if not (
@@ -71,7 +74,11 @@ async def upload_files(files: List[UploadFile] = File(...)):
             or file.filename.lower().endswith(".csv")
         ):
             raise HTTPException(status_code=400, detail="Invalid file type")
+        if file.content_type not in allowed_types:
+            raise HTTPException(status_code=400, detail="Invalid MIME type")
         content = await file.read()
+        if len(content) > MAX_FILE_SIZE:
+            raise HTTPException(status_code=400, detail="File too large")
         records.append((file.filename, sqlite3.Binary(content)))
     with sqlite3.connect(DB_PATH) as conn:
         conn.executemany(
